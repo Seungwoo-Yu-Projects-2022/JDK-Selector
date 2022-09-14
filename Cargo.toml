@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "jdk_selector_shared",
+    "jdk_selector_cli",
+    "jdk_selector_executor"
+]
