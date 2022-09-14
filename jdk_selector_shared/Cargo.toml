@@ -1,5 +1,7 @@
 [package]
 name = "jdk_selector_shared"
+authors = ["Seungwoo Yu <seungwoyu2000@gmail.com>"]
+license = "Apache-2.0 OR MIT"
 version = "0.1.0"
 edition = "2021"
 
