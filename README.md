@@ -17,7 +17,7 @@
    ````
    cargo run --bin jdk_selector_builder
    ````
-5. Check out the target folder in the source root! 
+5. Check out .build folder in the source root!
 
 ## TO-DOs
 
