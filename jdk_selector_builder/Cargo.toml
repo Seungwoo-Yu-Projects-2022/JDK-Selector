@@ -1,0 +1,14 @@
+[package]
+name = "jdk_selector_builder"
+authors = ["Seungwoo Yu <seungwoyu2000@gmail.com>"]
+license = "Apache-2.0 OR MIT"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde = { version = "1.0.144", features = ["derive"] }
+serde_json = "1.0.85"
+colored = "2.0.0"

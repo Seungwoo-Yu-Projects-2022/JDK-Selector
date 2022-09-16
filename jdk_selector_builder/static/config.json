@@ -1,0 +1,5 @@
+{
+  "executor": {
+    "filenames": ["java.exe"]
+  }
+}
