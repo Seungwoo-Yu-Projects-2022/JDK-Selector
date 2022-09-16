@@ -15,14 +15,17 @@
    ````
 4. Build source
    ````
-   cargo build (-r)
+   cargo run --bin jdk_selector_builder
    ````
 5. Check out the target folder in the source root! 
 
 ## TO-DOs
 
 1. ~~Create draft source written in rust~~
-2. Check availability on macOS and Linux distributions (Tested on Windows 10 only at this moment)
-3. Create Unit test for better refactoring
-4. Create CI/CD with installers
-5. Create document for welcomed future PRs
+2. ~~Create cross-platform builder in Rust~~
+3. Create Native installers and CI/CD for distribution for Windows
+4. Check availability on macOS and Linux distributions (Tested on Windows 10 only at this moment)
+5. Create Native installers and CI/CD for distribution for macOS/Linux
+6. Create Unit test for better refactoring
+7. Create document for welcomed PRs in future
+8. Add missing executors for other Java versions (Verified on Java 8 and 17)
