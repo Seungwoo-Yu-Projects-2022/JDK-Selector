@@ -42,7 +42,7 @@ fn main() -> ExitCode {
             let help_type = match &_help_type {
                 Some(value) => *value,
                 None => {
-                    show_use_help();
+                    show_main_help();
                     return ExitCode::FAILURE;
                 },
             };
