@@ -32,7 +32,10 @@
    %JAVA_HOME% // bin MUST be excluded!
    ````
 4. Reopen terminal to affect changes
-5. Type it to check if it's installed successfully!
+5. Type this to check if it's installed successfully!
+   ````
+   jdk_selector_cli help
+   ````
 
 ## Create installer
 
