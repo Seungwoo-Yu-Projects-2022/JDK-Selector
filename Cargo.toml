@@ -5,3 +5,6 @@ members = [
     "jdk_selector_executor",
     "jdk_selector_builder",
 ]
+
+[profile.release]
+strip = true # Strip symbols from binary for non-Windows distributions
