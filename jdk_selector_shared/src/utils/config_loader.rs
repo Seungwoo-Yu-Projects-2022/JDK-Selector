@@ -4,20 +4,9 @@ use std::path::{Path, PathBuf};
 use directories::ProjectDirs;
 use crate::models::config::Config;
 
-pub struct InvalidPathError {
-    path: String,
-}
-
-impl Display for InvalidPathError {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Path \"{}\" is not valid.", &*self.path)
-    }
-}
-
 pub enum JsonErrorOrIOOrInvalidPathError {
     JsonError(serde_json::Error),
     IOError(io::Error),
-    InvalidPathError(InvalidPathError),
 }
 
 impl Display for JsonErrorOrIOOrInvalidPathError {
@@ -27,9 +16,6 @@ impl Display for JsonErrorOrIOOrInvalidPathError {
                 value.fmt(f)
             }
             JsonErrorOrIOOrInvalidPathError::IOError(value) => {
-                value.fmt(f)
-            }
-            JsonErrorOrIOOrInvalidPathError::InvalidPathError(value) => {
                 value.fmt(f)
             }
         }
@@ -74,19 +60,8 @@ pub fn set_config(path: &Path, config: &Config) -> Result<(), JsonErrorOrIOOrInv
     };
 
     let path_string = String::from(path.to_string_lossy());
-    let _file_name_with_extension = path.iter().last();
-    let file_name_with_extension = match _file_name_with_extension {
-        Some(va) => String::from(va.to_os_string().to_string_lossy()),
-        None => {
-            return Err(
-                JsonErrorOrIOOrInvalidPathError::InvalidPathError(
-                    InvalidPathError {path: path_string}
-                )
-            );
-        },
-    };
 
-    match fs::create_dir_all(Path::new(&file_name_with_extension)) {
+    match fs::create_dir_all(Path::new(&path_string)) {
         Ok(_) => {}
         Err(e) => {
             return Err(JsonErrorOrIOOrInvalidPathError::IOError(e));
