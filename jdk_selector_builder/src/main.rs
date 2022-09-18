@@ -1,7 +1,7 @@
 mod models;
 mod utils;
 
-use std::fs;
+use std::{env, fs};
 use std::fs::{ReadDir};
 use std::path::Path;
 use std::process::{Command, ExitCode};
@@ -195,10 +195,12 @@ fn copy_files(filenames: &Vec<String>) -> Result<(), std::io::Error> {
 
 // TODO: Determine if it is required to get rid of static strings here
 fn populate_executors(config: &Config, original_filename: &String) -> Result<(), std::io::Error> {
+    let extension = if env::consts::OS == "windows" { ".exe" } else { "" };
+
     for filename in config.executor.filenames.iter() {
         match fs::copy(
             format!("./.build/{}", original_filename),
-            format!("./.build/{}", filename),
+            format!("./.build/{}{}", filename, extension),
         ) {
             Ok(..) => {},
             Err(e) => {
