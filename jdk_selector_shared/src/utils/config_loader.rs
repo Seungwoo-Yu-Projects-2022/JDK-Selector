@@ -59,9 +59,10 @@ pub fn set_config(path: &Path, config: &Config) -> Result<(), JsonErrorOrIOOrInv
         }
     };
 
-    let path_string = String::from(path.to_string_lossy());
+    let mut path_without_filename = PathBuf::from(&path);
+    path_without_filename.pop();
 
-    match fs::create_dir_all(Path::new(&path_string)) {
+    match fs::create_dir_all(&path_without_filename) {
         Ok(_) => {}
         Err(e) => {
             return Err(JsonErrorOrIOOrInvalidPathError::IOError(e));
