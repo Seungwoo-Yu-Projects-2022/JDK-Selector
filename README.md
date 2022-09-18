@@ -3,6 +3,21 @@
 
 ### This library provides you opportunity to change JDK version instantly by some commands.
 
+## Simple usage
+1. Install JDK-Selector
+2. (Re)open terminal
+3. Type `jdk_selector_cli add name path`
+   ````
+   i.e jdk_selector_cli add "JDK 1.8" "C:\Program Files\Java\jdk1.8.0_321"
+   ````
+4. Type `jdk_selector_cli use name`
+   ````
+   i.e jdk_selector_cli use "JDK 1.8"
+   ````
+5. Done!
+
+For details, please see `jdk_selector_cli (help)`
+
 ## Build steps
 1. Install rustup https://rustup.rs/
 2. Clone this source
@@ -17,7 +32,7 @@
    ````
    cargo run --bin jdk_selector_builder
    ````
-5. Check out .build folder in the source root!
+5. Check out `.build` folder in the source root!
 
 ## Manual installation
 1. Copy files into anywhere you want
@@ -41,9 +56,9 @@
 
 ### for Windows
 1. Install Inno setup 6
-2. Open the program and jdk_selector_installer/windows/setup.iss
+2. Open the program and `jdk_selector_installer/windows/setup.iss`
 3. Compile it!
-4. Check out Output folder in jdk_selector_installer/windows/Output
+4. Check out Output folder in `jdk_selector_installer/windows/Output`
 
 ## TO-DOs
 
