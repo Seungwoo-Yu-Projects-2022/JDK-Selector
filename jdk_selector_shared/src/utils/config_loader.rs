@@ -30,7 +30,7 @@ pub fn config_path() -> Result<ProjectDirs, &'static str> {
     let project_dir = ProjectDirs::from(
         "com",
         "ysw2k",
-        "jdk-selector-rust",
+        "jdk-selector",
     );
     let config_dir = match project_dir {
         Some(value) => value,
