@@ -4,6 +4,7 @@ members = [
     "jdk_selector_cli",
     "jdk_selector_executor",
     "jdk_selector_builder",
+    "jdk_selector_installer/linux",
 ]
 
 [profile.release]
