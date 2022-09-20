@@ -70,7 +70,10 @@ fn main() -> ExitCode {
         .join(&file_name);
     print_on_debug!(combined_path.display());
 
-    let mut _cmd = Command::new(combined_path).args(args).spawn();
+    let mut _cmd = Command::new(combined_path)
+        .args(args)
+        .envs(env::vars())
+        .spawn();
     let cmd = match &mut _cmd {
         Ok(value) => value,
         Err(e) => {
