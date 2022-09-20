@@ -30,6 +30,7 @@ DisableProgramGroupPage=yes
 ChangesEnvironment=true
 LanguageDetectionMethod=none
 DisableWelcomePage=False
+OutputBaseFilename={#MyAppName}-Installer
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -102,7 +103,7 @@ end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
-    if (CurStep = ssPostInstall) and IsTaskSelected('appendEnvPathIfNecessary')
+    if (CurStep = ssPostInstall) and WizardIsTaskSelected('appendEnvPathIfNecessary')
     then
     begin
       RegWriteStringValue(HKEY_LOCAL_MACHINE, EnvironmentKey, 'JAVA_HOME', ExpandConstant('{app}'));
