@@ -115,6 +115,9 @@ dependencies = [
 [[package]]
 name = "jdk_selector_installer_linux"
 version = "0.1.0"
+dependencies = [
+ "directories",
+]
 
 [[package]]
 name = "jdk_selector_shared"
