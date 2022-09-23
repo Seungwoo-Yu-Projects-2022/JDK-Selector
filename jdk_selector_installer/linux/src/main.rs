@@ -9,7 +9,7 @@ fn main() -> ExitCode {
     const VERSION: &str = env!("CARGO_PKG_VERSION");
 
     match build_deb(AUTHOR, DESCRIPTION, VERSION) {
-        Ok(..) => (),
+        Ok(..) => {},
         Err(e) => {
             println!("{}", e);
             println!("Debian package build failed.");
@@ -36,7 +36,7 @@ fn build_deb(author: &str, description: &str, version: &str) -> Result<ExitCode,
             "{}{}{}{}{}",
             "Package: jdk-selector\n",
             format!("Version: {}\n", version),
-            "Architecture: amd64\n", // TODO: Read output path to determine architecture
+            "Architecture: amd64\n", // TODO: Read rust output path to determine architecture
             format!("Maintainer: {}\n", author),
             format!("Description: {}\n", if description == "" { "N/A" } else { description }),
         ).as_bytes())?;
@@ -58,7 +58,9 @@ fn build_deb(author: &str, description: &str, version: &str) -> Result<ExitCode,
     let prerm_path = &debian_folder_path.join("prerm");
     let mut prerm = create_file(prerm_path)?;
     prerm.write_all(format!(
-        "rm /usr/bin/java",
+        "{}{}",
+        "rm /usr/bin/java\n",
+        "rm /usr/bin/jdk_selector_cli\n",
     ).as_bytes())?;
 
     #[cfg(unix)]
