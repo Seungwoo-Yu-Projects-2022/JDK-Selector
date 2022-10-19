@@ -102,57 +102,32 @@ fn build_deb(author: &str, description: &str, version: &str) -> Result<ExitCode,
 }
 
 fn build_rpm(description: &str, version: &str) -> Result<ExitCode, Error> {
-    let source_filename = format!("jdk-selector-{}.tar.zst", version);
-    // TODO: Read rust output path to determine architecture
-    let output_filename = format!("jdk-selector-{}-1.x86_64.rpm", version);
-
     let root_folder_path = PathBuf::from("./jdk_selector_installer/linux/.rpm-build");
     let source_folder_path = &root_folder_path.join("SOURCES");
     let spec_folder_path = &root_folder_path.join("SPECS");
-    let build_root_folder_path = &root_folder_path.join("BUILDROOT");
-    // TODO: Read rust output path to determine architecture
-    let output_folder_path = &root_folder_path.join("RPMS").join("x86_64");
+    let build_root_folder_path = &root_folder_path.join("BUILD");
 
     let spec_file_path = &spec_folder_path.join("jdk-selector.spec");
-    let source_file_path = &source_folder_path.join(&source_filename);
-    let output_file_path = &output_folder_path.join(&output_filename);
 
     let _ = remove_dir_all(&root_folder_path);
     create_dir_all(source_folder_path)?;
     create_dir_all(spec_folder_path)?;
     create_dir_all(build_root_folder_path)?;
-    create_dir_all(output_folder_path)?;
 
     let absolute_root_folder_path = &root_folder_path.canonicalize()?;
     let absolute_spec_file_path = &absolute_root_folder_path.join("SPECS")
         .join("jdk-selector.spec");
 
-    let mut _tar_cmd = Command::new("tar")
-        .args(&[
-            "--zstd",
-            "-cf",
-            &source_file_path.to_string_lossy(),
-            "-C",
-            &Path::new(".build").to_string_lossy(),
-            ".",
-        ])
-        .spawn();
-
-    let tar_cmd = match &mut _tar_cmd {
-        Ok(value) => value,
-        Err(e) => {
-            return Err(Error::from(e.kind()));
-        },
-    };
-
-    match tar_cmd.wait() {
-        Ok(..) => {},
-        Err(e) => {
-            return Err(e);
-        },
-    }
+    copy_dir_all(&Path::new(".build"), &build_root_folder_path)?;
 
     let mut _raw_script: Vec<StrPtrOrString> = vec![];
+    _raw_script.push(StrPtrOrString::StrPtr("%define _binary_payload w3.zstdio"));
+    _raw_script.push(StrPtrOrString::String(
+        format!(
+            "%define _topdir {}",
+            &root_folder_path.canonicalize()?.to_string_lossy(),
+        )
+    ));
     _raw_script.push(StrPtrOrString::StrPtr("Name: jdk-selector"));
     _raw_script.push(StrPtrOrString::String(format!("Version: {}", version)));
     _raw_script.push(StrPtrOrString::StrPtr("Release: 1"));
@@ -165,8 +140,6 @@ fn build_rpm(description: &str, version: &str) -> Result<ExitCode, Error> {
     // TODO: Read rust output path to determine architecture
     _raw_script.push(StrPtrOrString::StrPtr("BuildArch: x86_64"));
     _raw_script.push(StrPtrOrString::StrPtr("License: ASL 2.0"));
-    _raw_script.push(StrPtrOrString::StrPtr("Source0: %{name}-%{version}.tar.zst"));
-    _raw_script.push(StrPtrOrString::StrPtr("Requires: zstd\n"));
 
     _raw_script.push(StrPtrOrString::StrPtr("%description"));
     _raw_script.push(StrPtrOrString::String(
@@ -177,10 +150,9 @@ fn build_rpm(description: &str, version: &str) -> Result<ExitCode, Error> {
     ));
 
     _raw_script.push(StrPtrOrString::StrPtr("%install"));
-    _raw_script.push(StrPtrOrString::StrPtr("cd $RPM_BUILD_ROOT/.."));
     _raw_script.push(StrPtrOrString::StrPtr("rm -rf $RPM_BUILD_ROOT"));
     _raw_script.push(StrPtrOrString::StrPtr("mkdir -p $RPM_BUILD_ROOT/%{_libdir}/jdk-selector"));
-    _raw_script.push(StrPtrOrString::StrPtr("cp %{SOURCE0} $RPM_BUILD_ROOT/%{_libdir}/jdk-selector\n"));
+    _raw_script.push(StrPtrOrString::StrPtr("cp -r $RPM_BUILD_DIR/. $RPM_BUILD_ROOT/%{_libdir}/jdk-selector\n"));
 
     _raw_script.push(StrPtrOrString::StrPtr("%clean"));
     _raw_script.push(StrPtrOrString::StrPtr("rm -rf $RPM_BUILD_ROOT\n"));
@@ -189,21 +161,6 @@ fn build_rpm(description: &str, version: &str) -> Result<ExitCode, Error> {
     _raw_script.push(StrPtrOrString::StrPtr("%{_libdir}/jdk-selector/*"));
 
     _raw_script.push(StrPtrOrString::StrPtr("%post"));
-    _raw_script.push(StrPtrOrString::String(
-        format!(
-            "{}{} {}",
-            "tar -I zstd -xvf %{_libdir}/jdk-selector/",
-            &source_filename,
-            "-C %{_libdir}/jdk-selector",
-        ),
-    ));
-    _raw_script.push(StrPtrOrString::String(
-        format!(
-            "{}{}",
-            "rm %{_libdir}/jdk-selector/",
-            &source_filename,
-        ),
-    ));
     _raw_script.push(StrPtrOrString::StrPtr("chmod 755 -R %{_libdir}/jdk-selector"));
     _raw_script.push(StrPtrOrString::StrPtr("ln -s %{_libdir}/jdk-selector/java %{_bindir}/java"));
     _raw_script.push(StrPtrOrString::StrPtr("ln -s %{_libdir}/jdk-selector/jdk_selector_cli %{_bindir}/jdk_selector_cli\n"));
@@ -223,8 +180,6 @@ fn build_rpm(description: &str, version: &str) -> Result<ExitCode, Error> {
     File::create(spec_file_path)?.write_all(&raw_script.join("\n").as_bytes())?;
 
     let mut _build_package_cmd = Command::new("rpmbuild").args(&[
-        "--buildroot",
-        &build_root_folder_path.canonicalize()?.to_string_lossy(),
         "-ba",
         &absolute_spec_file_path.to_string_lossy(),
     ]).current_dir(&root_folder_path).spawn();
@@ -243,29 +198,7 @@ fn build_rpm(description: &str, version: &str) -> Result<ExitCode, Error> {
         },
     }
 
-    // TODO: Read rust output path to determine architecture
-    let original_output_file_path = directories::BaseDirs::new().unwrap()
-        .home_dir()
-        .join("rpmbuild/RPMS")
-        .join("x86_64")
-        .join(&output_filename);
-
-    match copy(
-        &original_output_file_path,
-        output_file_path,
-    ) {
-        Ok(..) => {},
-        Err(e) => {
-            return Err(e);
-        },
-    }
-
-    match remove_file(&original_output_file_path) {
-        Ok(_) => Ok(ExitCode::SUCCESS),
-        Err(e) => {
-            return Err(e);
-        },
-    }
+    Ok(ExitCode::SUCCESS)
 }
 
 fn copy_dir_all(src: &Path, dist: &Path) -> Result<(), Error> {
