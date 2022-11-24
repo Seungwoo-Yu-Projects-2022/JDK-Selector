@@ -65,9 +65,11 @@ For details, please see `jdk_selector_cli (help)`
 1. ~~Create draft source written in rust~~
 2. ~~Create cross-platform builder in Rust~~
 3. ~~Create Native installers for Windows~~
-4. Create CI/CD for distribution for Windows
-5. Check availability on macOS and Linux distributions (Tested on Windows 10 only at this moment)
-6. Create Native installers and CI/CD for distribution for macOS/Linux
-7. Create Unit test for better refactoring
-8. Create document for welcomed PRs in future
-9. Add missing executors for other Java versions (Verified on Java 8 and 17)
+4. Create Native installers for Debian and Redhat distributions (Working...)
+5. Add multi-architecture support for jdk_selector_builder and jdk_selector_installer/linux
+6. Create CI/CD for distribution for Windows/Linux
+7. Check availability on macOS distributions (Tested on Windows 10 and Ubuntu 22.04 only at this moment)
+8. Create Native installers and CI/CD for distribution for macOS
+9. Create Unit test for better refactoring
+10. Create document for welcomed PRs in future
+11. Add missing executors for other Java versions (Verified on Oracle Java 8 and 17 on Windows 10 and OpenJDK Java 8 on Ubuntu 22.04)
