@@ -1,6 +1,19 @@
 # JDK-Selector
 `Select your JDK anywhere, anytime by single or two commands`
 
+# This project is discontinued because...
+It was my first project in Rust and kind of draft so codes didn't look clean, straightforward and cover edge cases at most times.
+
+Moreover, I felt this project could be used in more places than where I expected.
+
+Therefore, to expand concept of project I decided to create and maintain another well-designed project.
+
+Check repo: https://github.com/Seungwoo-Yu/Package-Select
+
+JDK-Selector still does the job well on Windows and Linux (Amd64 only though) and arm64 macOS.
+
+---
+
 ### This library provides you opportunity to change JDK version instantly by some commands.
 
 ## Simple usage
